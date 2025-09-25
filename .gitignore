@@ -1,3 +1,30 @@
 .venv
 .env
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Logs and temporary files
+*.log
+tmp/
+.DS_Store # macOS specific
+
+# Build artifacts
+dist/
+build/
+
+# Sensitive information (example)
+config.ini # If it contains credentials
