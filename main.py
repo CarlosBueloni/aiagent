@@ -6,35 +6,60 @@ from google.genai import types
 
 from prompts import system_prompt
 
-args = sys.argv
+from functions.get_files_info import schema_get_files_info
 
-if len(args) < 2:
-    print("Error, please enter prompt")
-    sys.exit(1)
+def main():
+    load_dotenv()
 
-user_prompt = args[1]
+    verbose = "--verbose" in sys.argv
+    args = []
+    for arg in sys.argv[1:]:
+        if not arg.startswith("--"):
+            args.append(arg)
 
-load_dotenv()
-api_key = os.environ.get("GEMINI_API_KEY")
+    if not args:
+        print("AI Code Assistant")
+        print('\nUsage: python main.py "your prompt here" [--verbose]')
+        print('Example: python main.py "How do I fix the calculator?"')
+        sys.exit(1)
 
-client = genai.Client(api_key=api_key)
-messages = [
-    types.Content(role="user", parts=[types.Part(text=user_prompt)])
-]
+    api_key = os.environ.get("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
 
-response = client.models.generate_content(
-    model='gemini-2.0-flash-001',
-    contents=messages,
-    config=types.GenerateContentConfig(system_instruction=system_prompt)
-)
+    user_prompt = " ".join(args)
 
-print(response.text)
-if len(args) > 2:
-    if "--verbose" in args:
-        if response.usage_metadata != None:
-            print(f"User prompt: {response.text}")
-            print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-            print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    if verbose:
+        print(f"User prompt: {user_prompt}\n")
+ 
+    messages = [
+        types.Content(role="user", parts=[types.Part(text=user_prompt)]),
+    ]
 
+    generate_content(client, messages, verbose)
 
+def generate_content(client, messages, verbose):
+    available_functions = types.Tool(
+        function_declarations=[
+           schema_get_files_info, 
+        ]
+    )
 
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-001",
+        contents=messages,
+        config=types.GenerateContentConfig(
+            tools=[available_functions], system_instruction=system_prompt
+        ),
+    )
+    if verbose:
+        print("Prompt tokens:", response.usage_metadata.prompt_token_count)
+        print("Response tokens:", response.usage_metadata.candiates_token_count)
+    print("Response:")
+    if response.function_calls:
+        for function_call_part in response.function_calls:
+            print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+    else:
+        print(response)
+
+if __name__ == "__main__":
+    main()
