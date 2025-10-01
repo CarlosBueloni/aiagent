@@ -31,5 +31,4 @@ schema_get_file_content = types.FunctionDeclaration(
             )
         }
     )
-    
 )
