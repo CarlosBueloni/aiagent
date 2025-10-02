@@ -20,7 +20,7 @@ def write_file(working_directory, file_path, content):
     except Exception as e:
         return f'Error writting to file: {e}'
 
-schema_get_files_info = types.FunctionDeclaration(
+schema_write_file = types.FunctionDeclaration(
     name="write_file",
     description="Write content to a specified file, constrained to the working directory.",
     parameters=types.Schema(

@@ -1,6 +1,5 @@
 import os
 import subprocess
-from typing import Type
 from google.genai import types
 
 def run_python_file(working_directory, file_path, args=[]):
@@ -48,7 +47,10 @@ schema_run_python_file = types.FunctionDeclaration(
             ),
             "args": types.Schema(
                 type=types.Type.ARRAY,
-                description="The arguments that passed to execute the file, can be empty."
+                description="The arguments that passed to execute the file, can be empty.",
+                items=types.Schema(
+                    type=types.Type.STRING,
+                ),
             )
         }
     )
