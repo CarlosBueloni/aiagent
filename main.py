@@ -8,6 +8,7 @@ from prompts import system_prompt
 
 from functions.get_files_info import schema_get_files_info
 from functions.get_file_content import schema_get_file_content
+from functions.write_file import schema_write_file
 
 def main():
     load_dotenv()
@@ -42,6 +43,7 @@ def generate_content(client, messages, verbose):
         function_declarations=[
             schema_get_files_info,
             schema_get_file_content, 
+            schema_write_file,
         ]
     )
     response = client.models.generate_content(
