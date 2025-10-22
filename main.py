@@ -6,7 +6,7 @@ from google.genai import types
 
 from prompts import system_prompt
 
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 def main():
     load_dotenv()
