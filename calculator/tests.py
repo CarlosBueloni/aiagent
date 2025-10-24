@@ -5,6 +5,7 @@ from pkg.calculator import Calculator
 
 
 class TestCalculator(unittest.TestCase):
+    print("inside tests")
     def setUp(self):
         self.calculator = Calculator()
 
